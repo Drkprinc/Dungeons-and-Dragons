@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100d0c">
+  <meta name="description" content="A shared fantasy adventure guided by an AI Dungeon Master.">
+  <title>Emberfall Legends — A Shared Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <section id="homeScreen" class="home-screen screen">
+    <div class="home-shade"></div>
+    <header class="home-topbar">
+      <div class="brand-mark"><span class="brand-sigil">✦</span><span>EMBERFALL <b>LEGENDS</b></span></div>
+      <div class="top-note">A SHARED TABLETOP ADVENTURE</div>
+    </header>
+    <main class="hero-layout">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> YOUR STORY BEGINS HERE <span></span></div>
+        <h1>EMBERFALL<br><em>LEGENDS</em></h1>
+        <p class="hero-subtitle">One table. Five fates. A world that remembers every choice.</p>
+        <p class="hero-description">Gather your companions, choose your heroes, and step into a living adventure guided by the Dungeon Master.</p>
+        <div class="hero-actions">
+          <button id="startButton" class="btn btn-primary btn-large"><span>✦</span> START GAME</button>
+          <button id="joinButton" class="btn btn-ghost">JOIN WITH CODE</button>
+          <button id="randomButton" class="btn btn-ghost">FIND RANDOM PLAYERS</button>
+        </div>
+        <div class="hero-footnote"><span class="online-dot"></span> 2–5 PLAYERS &nbsp;·&nbsp; PRIVATE ACTIONS &nbsp;·&nbsp; SHARED STORY</div>
+      </div>
+    </main>
+    <div class="home-bottom"><span>✧</span> THE WORLD IS NOT KIND. THE CHOICES ARE YOURS. <span>✧</span></div>
+  </section>
+
+  <section id="gameScreen" class="game-screen screen hidden">
+    <header class="game-topbar">
+      <div class="game-brand"><span class="brand-sigil">✦</span><span>EMBERFALL <b>LEGENDS</b></span></div>
+      <div class="game-heading"><div class="eyebrow">THE FATE OF THE PARTY</div><h1 id="gameTitle">The Gathering</h1></div>
+      <div class="topbar-actions">
+        <div class="room-code-block"><span>ROOM</span><strong id="roomCodeLabel">-----</strong></div>
+        <button id="copyInviteButton" class="btn btn-small btn-outline">COPY INVITE</button>
+        <button id="leaveButton" class="icon-button" aria-label="Leave room" title="Leave room">✕</button>
+      </div>
+    </header>
+
+    <main class="game-shell">
+      <section id="lobbyView" class="stage-panel hidden">
+        <div class="section-kicker">BEFORE THE ADVENTURE</div>
+        <h2>Gather your party</h2>
+        <p class="muted-copy">Invite friends with the room link or code. At least two adventurers are needed to begin.</p>
+        <div class="lobby-grid">
+          <div class="subpanel party-panel">
+            <div class="panel-heading"><h3>THE PARTY</h3><span id="playerCount" class="count-pill">1 / 5</span></div>
+            <div id="lobbyPlayers" class="player-list"></div>
+            <div class="lobby-start-row">
+              <div id="hostHint" class="hint-text">Waiting for companions...</div>
+              <button id="startDraftButton" class="btn btn-primary" disabled>BEGIN CHARACTER DRAFT <span>→</span></button>
+            </div>
+          </div>
+          <div class="subpanel invite-panel">
+            <div class="panel-heading"><h3>SUMMON ALLIES</h3><span class="ornament">✦</span></div>
+            <p>Send this invite to your friends. Anyone with the code can join while the lobby is open.</p>
+            <div class="invite-code"><span id="inviteCodeLarge">-----</span><button id="copyCodeButton" class="copy-icon" aria-label="Copy room code">▣</button></div>
+            <button id="copyLinkButton" class="btn btn-outline btn-full">COPY INVITE LINK</button>
+            <div class="rule-line"></div>
+            <div class="setting-summary"><span>WORLD</span><strong id="lobbySetting">Classic Fantasy</strong></div>
+            <div class="setting-summary"><span>DIFFICULTY</span><strong id="lobbyDifficulty">Adventurer</strong></div>
+            <div class="tiny-note">Random matchmaking is also available from the title screen.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="draftView" class="stage-panel hidden">
+        <div class="section-kicker">CHOOSE WHO YOU BECOME</div>
+        <div class="draft-title-row"><div><h2>Choose your champion</h2><p class="muted-copy">Every player chooses one hero. The shared pool contains two extra characters beyond your party size.</p></div><div class="draft-progress" id="draftProgress">0 / 2 CHOSEN</div></div>
+        <div id="characterPool" class="character-grid"></div>
+        <div class="custom-character-panel subpanel">
+          <div class="custom-copy"><span class="section-kicker">FORGE YOUR OWN</span><h3>Or create a character</h3><p>Choose a class from this world's rules. Your starting stats are balanced automatically.</p></div>
+          <div class="custom-fields">
+            <label>CHARACTER NAME<input id="customName" type="text" maxlength="24" placeholder="Name your hero"></label>
+            <label>CLASS<select id="customClass"></select></label>
+            <button id="createCustomButton" class="btn btn-outline">CREATE CHARACTER</button>
+          </div>
+        </div>
+        <div id="draftWaiting" class="draft-waiting hidden">Your character is chosen. Waiting for the rest of the party...</div>
+      </section>
+
+      <section id="adventureView" class="adventure-layout hidden">
+        <aside class="character-sheet subpanel">
+          <div class="sheet-topline"><span>YOUR CHARACTER</span><span class="sheet-star">✦</span></div>
+          <div class="portrait-block"><div id="myCharacterIcon" class="character-portrait">⚔️</div><div><h2 id="myCharacterName">Your Hero</h2><p id="myCharacterClass" class="class-label">CLASS</p></div></div>
+          <p id="myCharacterDescription" class="character-description"></p>
+          <div class="sheet-divider"></div>
+          <div class="stat-heading"><span>VITALITY</span><strong id="hpText">95 / 95</strong></div>
+          <div class="meter"><div id="hpMeter" class="meter-fill hp-fill"></div></div>
+          <div class="sheet-divider"></div>
+          <div class="stat-heading"><span>TECHNIQUES LEFT</span><strong id="movesText">2 / 2</strong></div>
+          <div id="movesList" class="ability-list"></div>
+          <div class="sheet-divider"></div>
+          <div class="ultimate-block"><div><span class="stat-caption">SIGNATURE MOVE</span><h3 id="ultimateName">Ultimate</h3><p id="ultimateState">READY</p></div><div id="ultimateGlyph" class="ultimate-glyph">✧</div></div>
+          <div class="sheet-bottom-note">LEVEL <b id="levelText">1</b> <span>·</span> <span id="characterCondition">READY FOR THE UNKNOWN</span></div>
+        </aside>
+
+        <section class="story-column">
+          <div class="story-header"><div><span class="section-kicker">THE DUNGEON MASTER</span><h2 id="storyHeading">The First Encounter</h2></div><div class="round-badge"><span>ROUND</span><strong id="roundNumber">1</strong></div></div>
+          <div id="partyStatusBar" class="party-status-bar"></div>
+          <div id="storyFeed" class="story-feed" aria-live="polite"></div>
+          <div class="action-area subpanel">
+            <div class="action-topline"><span>YOUR PRIVATE ACTION</span><span id="submissionHint" class="submission-hint">Only you can see what you write.</span></div>
+            <textarea id="actionInput" maxlength="500" placeholder="Describe what your character attempts... Your action is hidden from the other players until the Dungeon Master resolves the round."></textarea>
+            <div class="action-bottom"><span id="actionCounter">0 / 500</span><button id="submitActionButton" class="btn btn-primary">SUBMIT ACTION <span>✦</span></button></div>
+            <div id="waitingMessage" class="waiting-message hidden">Your action is sealed. The Dungeon Master will respond when every player has submitted.</div>
+          </div>
+          <div class="dm-footnote"><span class="online-dot"></span><span id="dmModeLabel">DEMO DUNGEON MASTER</span><span>·</span><span>PRIVATE ACTIONS / SHARED CONSEQUENCES</span></div>
+        </section>
+
+        <aside class="party-rail subpanel">
+          <div class="panel-heading"><h3>THE FELLOWSHIP</h3><span class="ornament">✦</span></div>
+          <div id="adventurePlayers" class="adventure-player-list"></div>
+          <div class="rule-line"></div>
+          <div class="difficulty-card"><span>WORLD</span><strong id="activeSetting">Classic Fantasy</strong><span>CHALLENGE</span><strong id="activeDifficulty">Adventurer</strong></div>
+          <div class="party-note">The Dungeon Master can change each character's HP, resources, and learned techniques as the story unfolds.</div>
+        </aside>
+      </section>
+    </main>
+    <footer class="game-footer"><span>EMBERFALL LEGENDS</span><span>THE DICE DECIDE. THE PARTY ENDURES.</span><span id="connectionStatus">CONNECTED</span></footer>
+  </section>
+
+  <div id="entryModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="entryTitle">
+    <div class="modal-card entry-card">
+      <button id="closeEntryButton" class="modal-close" aria-label="Close">✕</button>
+      <div class="section-kicker">STEP INTO THE REALM</div>
+      <h2 id="entryTitle">Gather your companions</h2>
+      <p class="muted-copy">Create a private party, join a friend's room, or find random adventurers.</p>
+      <label class="form-label">YOUR PLAYER NAME<input id="playerNameInput" type="text" maxlength="24" placeholder="Enter a name" autocomplete="nickname"></label>
+      <div class="entry-tabs"><button class="entry-tab active" data-tab="create">CREATE ROOM</button><button class="entry-tab" data-tab="join">JOIN ROOM</button></div>
+      <div id="createTab" class="tab-content">
+        <label class="form-label">WORLD SETTING<select id="settingSelect"><option value="fantasy">Classic Fantasy — magic and monsters</option><option value="steel">Sword &amp; Steel — no magic</option><option value="scifi">Mythic Sci-Fi — advanced technology</option></select></label>
+        <label class="form-label">DIFFICULTY<select id="difficultySelect"><option value="easy">Storybound — forgiving</option><option value="balanced" selected>Adventurer — balanced</option><option value="hard">Nightmare — unforgiving</option></select></label>
+        <button id="createRoomButton" class="btn btn-primary btn-full">CREATE PRIVATE PARTY <span>→</span></button>
+      </div>
+      <div id="joinTab" class="tab-content hidden">
+        <label class="form-label">INVITE CODE<input id="roomCodeInput" type="text" maxlength="5" placeholder="e.g. A7K2Q" autocomplete="off"></label>
+        <button id="joinRoomButton" class="btn btn-primary btn-full">JOIN ADVENTURE <span>→</span></button>
+      </div>
+      <div class="modal-divider"><span>OR</span></div>
+      <button id="findRandomButton" class="btn btn-outline btn-full">⚔ FIND RANDOM PLAYERS</button>
+      <p class="tiny-note centered">Up to five players per party. Random matching needs at least one other player searching at the same time.</p>
+    </div>
+  </div>
+
+  <div id="queueModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="queueTitle">
+    <div class="modal-card queue-card">
+      <div class="queue-rune">✦</div><div class="section-kicker">SEARCHING THE REALMS</div><h2 id="queueTitle">Finding companions</h2>
+      <p id="queueMessage" class="muted-copy">Your name has been sent to the matchmaking queue. Keep this window open.</p>
+      <div class="queue-pulse"><span></span><span></span><span></span></div>
+      <button id="cancelQueueButton" class="btn btn-ghost btn-full">CANCEL SEARCH</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js" defer></script>
+</body>
+</html>
